@@ -32,6 +32,7 @@ namespace ApiOAuthEmpleados.Controllers
             return await this.repo.FindEmpleadoAsync(id);
         }
 
+        //[Authorize(Roles = "PRESIDENTE")]
         [Authorize]
         [HttpGet]
         [Route("[action]")]
@@ -51,6 +52,29 @@ namespace ApiOAuthEmpleados.Controllers
             string json = HttpContext.User.FindFirst(x => x.Type == "UserData").Value;
             Empleado empleado = JsonConvert.DeserializeObject<Empleado>(json);
             return await this.repo.GetCompisEmpeadoAsync(empleado.IdDepartamento);
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<ActionResult<List<string>>> Oficios()
+        {
+            return await this.repo.GetOficiosAsync();
+        }
+
+        //url = ?oficio=ANALISTA&oficio=DIRECTOR
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<ActionResult<List<Empleado>>> EmpleadosOficios([FromQuery] List<string> oficio)
+        {
+            return await this.repo.GetEmpleadosByOficiosAsync(oficio);
+        }
+
+        [HttpPut]
+        [Route("[action]/{incremento}")]
+        public async Task<ActionResult> IncrementarSalarios(int incremento, [FromQuery] List<string> oficio)
+        {
+            await this.repo.IncrementarSalariosAsync(incremento, oficio);
+            return Ok();
         }
     }
 }
