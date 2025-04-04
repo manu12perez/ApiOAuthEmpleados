@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 HelperActionServicesOAuth helper = new HelperActionServicesOAuth(builder.Configuration);
 builder.Services.AddSingleton<HelperActionServicesOAuth>(helper);
 builder.Services.AddAuthentication(helper.GetAuthenticateSchema()).AddJwtBearer(helper.GetJwtBearerOptions());
+HelperCryptography.Initialize(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 /***********************************************************************************************************/
 
 // Add services to the container.
